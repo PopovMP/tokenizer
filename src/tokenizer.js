@@ -3,13 +3,6 @@
 const operators   = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
 const syntaxChars = '( ) { } [ ] , ;'.split(' ')
 
-const reservedWords = {
-	'data type' : 'bool float uint char int ulong class long union color short ushort datetime string void double struct enum uchar'.split(' '),
-	'modifier'  : 'const private virtual delete protected override public'.split(' '),
-	'reserved'  : 'break operator case else pack continue for return default if sizeof delete new switch do while'.split(' '),
-	'constant'  : 'null true false undefined'.split(' '),
-}
-
 function tokenize(sourceCode) {
 	const output = []
 
@@ -57,9 +50,9 @@ function tokenize(sourceCode) {
 			return
 		}
 
-		// Add a reserved word or an identifier
+		// Add a word
 		if ( isChar(i, /[_a-zA-Z]/) ) {
-			mainLoop( addWord(i) )
+			mainLoop( addPattern(i, 'word', /[_a-zA-Z0-9]/) )
 			return
 		}
 
@@ -76,32 +69,6 @@ function tokenize(sourceCode) {
 		}
 
 		syntaxError('character not matched: ' + sourceCode[i])
-	}
-
-	function addWord(index) {
-
-		const end  = wordLoop(index)
-		const word = sourceCode.substring(index, end)
-
-		for (const type of Object.keys(reservedWords) ) {
-			if (reservedWords[type].includes(word)) {
-				addToken(type, word)
-				column += end - index
-				return end
-			}
-		}
-
-		addToken('identifier', word)
-		column += end - index
-		return end
-
-		function wordLoop(i) {
-			if ( sourceCode[i]?.match(/[_a-zA-Z0-9]/) ) {
-				return wordLoop(i + 1)
-			}
-
-			return i
-		}
 	}
 
 	function addString(index) {
@@ -217,7 +184,22 @@ function tokenize(sourceCode) {
 	}
 }
 
-module.exports = {
-	tokenize,
+function stringify(tokens) {
+	return tokens
+		.map( t => {
+			switch(t.type) {
+				case 'string':
+					return '"' + t.value + '"'
+				case 'comment':
+					return '//' + t.value
+				default:
+					return t.value
+			}
+		})
+		.join('')
 }
 
+module.exports = {
+	tokenize,
+	stringify,
+}

@@ -2,7 +2,7 @@
 
 const { strictEqual  } = require('assert')
 const { describe, it } = require('@popovmp/mocha-tiny')
-const { tokenize     } = require('../src/tokenizer.js')
+const { tokenize, stringify } = require('../src/tokenizer.js')
 
 const sourceCode = `
 //+------------------------------------------------------------------+
@@ -26,23 +26,11 @@ double AverageFromArray(const double & array[],int size)
 `
 
 describe('tokenizer code', () => {
-	describe('tokenizer.tokenize()', () => {
-		it('MQL code', () => {
-			const actual = tokenize(sourceCode)
-				.map( t => {
-					switch(t.type) {
-						case 'string':
-							return '"' + t.value + '"'
-						case 'comment':
-							return '//' + t.value
-						default:
-							return t.value
-					}
-				})
-				.join('')
+	describe('tokenizer.stringify()', () => {
+		it('tokenizes and stringifies', () => {
+			const actual = stringify( tokenize(sourceCode) )
 
 			strictEqual(actual, sourceCode)
 		})
 	})
 })
-
