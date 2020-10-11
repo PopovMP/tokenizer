@@ -6,7 +6,7 @@ const syntaxChars = '( ) { } [ ] , ;'.split(' ')
 const reservedWords = {
 	'data type' : 'bool float uint char int ulong class long union color short ushort datetime string void double struct enum uchar'.split(' '),
 	'modifier'  : 'const private virtual delete protected override public'.split(' '),
-	'reserved'  : 'break operator case else pack continue for return default if sizeof delete new switch do offsetof while'.split(' '),
+	'reserved'  : 'break operator case else pack continue for return default if sizeof delete new switch do while'.split(' '),
 	'constant'  : 'null true false undefined'.split(' '),
 }
 
@@ -37,7 +37,7 @@ function tokenize(sourceCode) {
 			return
 		}
 
-		// Add synax character
+		// Add syntax character
 		const syntaxLen = addSpecialSymbol(i, 'syntax', syntaxChars)
 		if (syntaxLen > 0) {
 			mainLoop(i + syntaxLen)
@@ -84,7 +84,7 @@ function tokenize(sourceCode) {
 		const word = sourceCode.substring(index, end)
 
 		if ( ! word.match(/\d+(?:\.?\d+)?/) ) {
-			syntaxError('unproper number: ' + word)
+			syntaxError('improper number: ' + word)
 		}
 
 		addToken('number', Number(word) )
@@ -93,7 +93,7 @@ function tokenize(sourceCode) {
 		return end
 
 		function numberLoop(i) {
-			if ( sourceCode[i]?.match(/[\.0-9]/) ) {
+			if ( sourceCode[i]?.match(/[.0-9]/) ) {
 				return numberLoop(i + 1)
 			}
 

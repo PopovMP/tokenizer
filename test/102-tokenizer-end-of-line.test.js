@@ -1,12 +1,12 @@
 'use strict'
 
-const { strictEqual, deepStrictEqual } = require('assert')
+const { strictEqual  } = require('assert')
 const { describe, it } = require('@popovmp/mocha-tiny')
 const { tokenize     } = require('../src/tokenizer.js')
 
 describe('tokenizer end of line', () => {
 	describe('tokenizer.tokenize()', () => {
-		it('nl', () => {
+		it('NL', () => {
 			const tokens = tokenize('\n')
 			const actual = tokens[0]
 			strictEqual(tokens.length, 1)
@@ -16,7 +16,7 @@ describe('tokenizer end of line', () => {
 			strictEqual(actual.value,  '\n')
 		})
 
-		it('nlcr', () => {
+		it('NLCR', () => {
 			const tokens = tokenize('\n\r')
 			const actual = tokens[0]
 			strictEqual(tokens.length, 1)
@@ -26,7 +26,7 @@ describe('tokenizer end of line', () => {
 			strictEqual(actual.value,  '\n\r')
 		})
 
-		it('nlcr nlcr nlcr', () => {
+		it('NLCR NLCR NLCR', () => {
 			const tokens = tokenize('\n\r\n\r\n\r')
 			const actual = tokens[0]
 			strictEqual(tokens.length, 1)
@@ -36,7 +36,7 @@ describe('tokenizer end of line', () => {
 			strictEqual(actual.value,  '\n\r\n\r\n\r')
 		})
 
-		it('nl nl a', () => {
+		it('Nl NL a', () => {
 			const tokens = tokenize('\n\na')
 			const actual = tokens[1]
 			strictEqual(tokens.length, 2)

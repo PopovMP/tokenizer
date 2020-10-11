@@ -1,6 +1,5 @@
 'use strict'
 
-const { readFileSync } = require('fs')
 const { strictEqual  } = require('assert')
 const { describe, it } = require('@popovmp/mocha-tiny')
 const { tokenize     } = require('../src/tokenizer.js')
@@ -28,7 +27,7 @@ double AverageFromArray(const double & array[],int size)
 
 describe('tokenizer code', () => {
 	describe('tokenizer.tokenize()', () => {
-		const code = sourceCode.replace(/0\.0/g, 0)
+		const code = sourceCode.replace(/0\.0/g, '0')
 
 		it('MQL code', () => {
 			const actual = tokenize(code)

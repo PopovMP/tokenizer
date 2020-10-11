@@ -1,6 +1,6 @@
 'use strict'
 
-const { strictEqual, deepStrictEqual } = require('assert')
+const { strictEqual  } = require('assert')
 const { describe, it } = require('@popovmp/mocha-tiny')
 const { tokenize     } = require('../src/tokenizer.js')
 
