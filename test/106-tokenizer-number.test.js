@@ -13,7 +13,7 @@ describe('tokenizer number', () => {
 			strictEqual(actual.line,   0)
 			strictEqual(actual.column, 0)
 			strictEqual(actual.type,   'number')
-			strictEqual(actual.value,  9)
+			strictEqual(actual.value,  '9')
 		})
 
 		it('  42', () => {
@@ -23,18 +23,18 @@ describe('tokenizer number', () => {
 			strictEqual(actual.line,   0)
 			strictEqual(actual.column, 2)
 			strictEqual(actual.type,   'number')
-			strictEqual(actual.value,  42)
+			strictEqual(actual.value,  '42')
 		})
 
 		it(' 3  3.14  NL9.98//xx', () => {
 			const tokens = tokenize(' 3  3.14  \n9.98//xx')
 			strictEqual(tokens.length, 8)
 			strictEqual(tokens[1].column, 1)
-			strictEqual(tokens[1].value,  3)
+			strictEqual(tokens[1].value, '3')
 			strictEqual(tokens[3].column, 4)
-			strictEqual(tokens[3].value, 3.14)
+			strictEqual(tokens[3].value, '3.14')
 			strictEqual(tokens[6].column, 0)
-			strictEqual(tokens[6].value, 9.98)
+			strictEqual(tokens[6].value, '9.98')
 		})
 	})
 })

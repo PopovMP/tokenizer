@@ -10,8 +10,8 @@ const sourceCode = `
 //+------------------------------------------------------------------+
 double AverageFromArray(const double & array[],int size)
   {
-   if(size<=0) return 0.0;	// TODO converts 0.0 to 0
-   double sum=0.0;			// TODO converts 0.0 to 0
+   if(size<=0) return 0.0;
+   double sum=0.0;
    double aver;
 //---
    for(int i=0;i<size;i++)
@@ -27,10 +27,8 @@ double AverageFromArray(const double & array[],int size)
 
 describe('tokenizer code', () => {
 	describe('tokenizer.tokenize()', () => {
-		const code = sourceCode.replace(/0\.0/g, '0')
-
 		it('MQL code', () => {
-			const actual = tokenize(code)
+			const actual = tokenize(sourceCode)
 				.map( t => {
 					switch(t.type) {
 						case 'string':
@@ -43,7 +41,7 @@ describe('tokenizer code', () => {
 				})
 				.join('')
 
-			strictEqual(actual, code)
+			strictEqual(actual, sourceCode)
 		})
 	})
 })

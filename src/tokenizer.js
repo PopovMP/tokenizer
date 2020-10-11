@@ -53,7 +53,7 @@ function tokenize(sourceCode) {
 
 		// Add a number
 		if ( isChar(i, /[0-9]/) ) {
-			mainLoop( addNumber(i) )
+			mainLoop( addPattern(i, 'number', /[.0-9]/) )
 			return
 		}
 
@@ -76,29 +76,6 @@ function tokenize(sourceCode) {
 		}
 
 		syntaxError('character not matched: ' + sourceCode[i])
-	}
-
-	function addNumber(index) {
-
-		const end  = numberLoop(index)
-		const word = sourceCode.substring(index, end)
-
-		if ( ! word.match(/\d+(?:\.?\d+)?/) ) {
-			syntaxError('improper number: ' + word)
-		}
-
-		addToken('number', Number(word) )
-		column += end - index
-
-		return end
-
-		function numberLoop(i) {
-			if ( sourceCode[i]?.match(/[.0-9]/) ) {
-				return numberLoop(i + 1)
-			}
-
-			return i
-		}
 	}
 
 	function addWord(index) {

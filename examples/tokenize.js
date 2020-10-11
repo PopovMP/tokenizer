@@ -9,9 +9,9 @@ const sourceCode = `
 double AverageFromArray(const double & array[], int size)
 {
 	if (size <= 0)
-		return 0.0;	// TODO converts 0.0 to 0
+		return 0.0;
 
-	double sum = 0.0; // TODO converts 0.0 to 0
+	double sum = 0.0;
 	double aver;
 
 	//---
