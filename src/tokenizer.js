@@ -1,7 +1,7 @@
 'use strict'
 
-const operators   = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
-const syntaxChars = '( ) { } [ ] , ;'.split(' ')
+const operators    = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
+const punctuations = '( ) { } [ ] , ;'.split(' ')
 
 function tokenize(sourceCode) {
 	const output = []
@@ -31,7 +31,7 @@ function tokenize(sourceCode) {
 		}
 
 		// Add syntax character
-		const syntaxLen = addSpecialSymbol(i, 'syntax', syntaxChars)
+		const syntaxLen = addSpecialSymbol(i, 'punctuation', punctuations)
 		if (syntaxLen > 0) {
 			mainLoop(i + syntaxLen)
 			return
