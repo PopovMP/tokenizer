@@ -30,10 +30,10 @@ function tokenize(sourceCode) {
 			return
 		}
 
-		// Add syntax character
-		const syntaxLen = addSpecialSymbol(i, 'punctuation', punctuations)
-		if (syntaxLen > 0) {
-			mainLoop(i + syntaxLen)
+		// Add punctuation
+		const punctuationLen = addSpecialSymbol(i, 'punctuation', punctuations)
+		if (punctuationLen > 0) {
+			mainLoop(i + punctuationLen)
 			return
 		}
 
@@ -111,23 +111,19 @@ function tokenize(sourceCode) {
 	}
 
 	function addSpecialSymbol(i, type, charList) {
-		if (i < sourceCode.length - 1) {
-			for (const symbol of charList) {
-				if (symbol.length === 2) {
-					if (sourceCode[i] + sourceCode[i + 1] === symbol) {
-						addToken(type, symbol)
-						column += 2
-						return 2
-					}
-				}
-			}
-		}
+		const maxLength = charList.reduce( (len, symbol) => Math.max(len, symbol.length), 1)
 
-		for (const symbol of charList) {
-			if (sourceCode[i] === symbol) {
-				addToken(type, symbol)
-				column += 1
-				return 1
+		for (let len = maxLength; len > 0; len--) {
+			if (i > sourceCode.length - len) {
+				continue
+			}
+
+			for (const symbol of charList) {
+				if (symbol.length === len && sourceCode.substr(i, len) === symbol) {
+					addToken(type, symbol)
+					column += len
+					return len
+				}
 			}
 		}
 
