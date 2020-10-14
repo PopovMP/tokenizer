@@ -20,13 +20,13 @@ function tokenize(sourceCode) {
 
 		// Add a string
 		if ( isChar(i, /"/) ) {
-			mainLoop( addString(i) )
+			mainLoop( addString(i, 'string') )
 			return
 		}
 
 		// Add a line comment
 		if ( isCharChar(i, /\/\//) ) {
-			mainLoop( addLineComment(i) )
+			mainLoop( addLineComment(i, 'comment') )
 			return
 		}
 
@@ -71,7 +71,7 @@ function tokenize(sourceCode) {
 		syntaxError('character not matched: ' + sourceCode[i])
 	}
 
-	function addString(index) {
+	function addString(index, type) {
 
 		const end = stringLoop(index + 1)
 		column += end - index + 1
@@ -82,7 +82,7 @@ function tokenize(sourceCode) {
 			const ch = sourceCode[i]
 
 			if (ch === '"') {
-				addToken('string', sourceCode.substring(index + 1, i) )
+				addToken(type, sourceCode.substring(index + 1, i) )
 				return i
 			}
 
@@ -94,7 +94,7 @@ function tokenize(sourceCode) {
 		}
 	}
 
-	function addLineComment(index) {
+	function addLineComment(index, type) {
 
 		return lineCommentLoop(index + 1)
 
@@ -102,7 +102,7 @@ function tokenize(sourceCode) {
 			const ch = sourceCode[i]
 
 			if (ch === '\n' || typeof ch === 'undefined') {
-				addToken('comment', sourceCode.substring(index + 2, i) )
+				addToken(type, sourceCode.substring(index + 2, i) )
 				return i
 			}
 
