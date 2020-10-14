@@ -199,7 +199,12 @@ function stringify(tokens) {
 		.join('')
 }
 
+function clean(tokens) {
+	return tokens.filter( t => !['space', 'eol', 'comment'].includes(t.type) )
+}
+
 module.exports = {
+	clean,
 	tokenize,
 	stringify,
 }
