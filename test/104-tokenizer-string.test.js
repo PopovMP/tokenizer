@@ -78,6 +78,18 @@ describe('tokenizer string', () => {
 			strictEqual(actual.type,   'string')
 			strictEqual(actual.value,  'aa')
 		})
+
+		it('""""""', () => {
+			const tokens = tokenize('""""""')
+			strictEqual(tokens.length, 1)
+			strictEqual(tokens[0].value,  '""')
+		})
+
+		it('"a""b"', () => {
+			const tokens = tokenize('"a""b"')
+			strictEqual(tokens.length, 1)
+			strictEqual(tokens[0].value,  'a"b')
+		})
 	})
 })
 

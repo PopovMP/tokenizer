@@ -82,7 +82,13 @@ function tokenize(sourceCode) {
 			const ch = sourceCode[i]
 
 			if (ch === '"') {
-				addToken(type, sourceCode.substring(index + 1, i) )
+				const str = sourceCode.substring(index + 1, i)
+				if (output.length > 0 && output[output.length - 1].type === type) {
+					output[output.length - 1].value += '"' + str
+				}
+				else {
+					addToken(type, str)
+				}
 				return i
 			}
 
