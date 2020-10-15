@@ -4,14 +4,14 @@ const operators    = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %=
 const punctuations = '( ) { } [ ] , ;'.split(' ')
 
 function tokenize(sourceCode) {
-	const output = []
+	const tokens = []
 
 	let line   = 0
 	let column = 0
 
 	mainLoop(0)
 
-	return output
+	return tokens
 
 	function mainLoop(i) {
 		if (i >= sourceCode.length) {
@@ -83,8 +83,8 @@ function tokenize(sourceCode) {
 
 			if (ch === '"') {
 				const str = sourceCode.substring(index + 1, i)
-				if (output.length > 0 && output[output.length - 1].type === type) {
-					output[output.length - 1].value += '"' + str
+				if (tokens.length > 0 && tokens[tokens.length - 1].type === type) {
+					tokens[tokens.length - 1].value += '"' + str
 				}
 				else {
 					addToken(type, str)
@@ -150,7 +150,7 @@ function tokenize(sourceCode) {
 		const end      = matchPattern(i, regex)
 		const value    = sourceCode.substring(i, end)
 
-		output.push({ line: currLine, column: currCol, type, value })
+		tokens.push({ line: currLine, column: currCol, type, value })
 
 		return end
 	}
@@ -178,7 +178,7 @@ function tokenize(sourceCode) {
 	}
 
 	function addToken(type, value) {
-		output.push({ line, column, type, value })
+		tokens.push({ line, column, type, value })
 	}
 
 	function syntaxError(message) {
