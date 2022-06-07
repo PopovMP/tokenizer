@@ -27,19 +27,13 @@ double AverageFromArray(const double & array[], int size)
 	return aver;
 }
 `
-
-function nstr(n) {
-	n++
-	return n < 10
-		? '  ' + n
-		: n < 100
-			? ' ' + n
-			: n
-}
-
 const output = tokenize(sourceCode)
-	.map( t => `[${ nstr(t.line) }, ${ nstr(t.column) }] ${t.type}\t=> ${t.value}`)
+	.map( t => `[${ numPad(t.line) }, ${ numPad(t.column) }] ${t.type.padEnd(12)} => ${t.value}`)
 	.join('\n')
 
 console.log( output )
 
+function numPad(n)
+{
+	return n.toString().padStart(4)
+}
