@@ -1,10 +1,27 @@
 'use strict'
 
+/**
+ * @typedef {Object} Token
+ *
+ * @property {number} line
+ * @property {number} column
+ * @property {string} type
+ * @property {string} value
+ */
+
 const operators    = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
 const punctuations = '( ) { } [ ] , ;'.split(' ')
 
+/**
+ * Tokenizes source code
+ *
+ * @param {string} sourceCode
+ *
+ * @return {Token[]}
+ */
 function tokenize(sourceCode)
 {
+	/** @type {Token[]} */
 	const tokens = []
 
 	let line   = 0
@@ -14,6 +31,11 @@ function tokenize(sourceCode)
 
 	return tokens
 
+	/**
+	 * Main tokenizer loop
+	 *
+	 * @param {number} i - code index
+	 */
 	function mainLoop(i)
 	{
 		if (i >= sourceCode.length)
@@ -64,14 +86,22 @@ function tokenize(sourceCode)
 		}
 
 		// Add a new line
-		if ( isChar(i, /[\n\r]/) ) {
-			mainLoop( addPattern(i, 'eol', /[\n\r]/) )
+		if ( isChar(i, /[\r\n]/) ) {
+			mainLoop( addPattern(i, 'eol', /[\r\n]/) )
 			return
 		}
 
 		syntaxError('character not matched: ' + sourceCode[i])
 	}
 
+	/**
+	 * Adds a string
+	 *
+	 * @param {number} index
+	 * @param {string} type
+	 *
+	 * @return {number} - code index
+	 */
 	function addString(index, type)
 	{
 		const end = stringLoop(index + 1)
@@ -94,13 +124,21 @@ function tokenize(sourceCode)
 				return i
 			}
 
-			if (ch === '\n' || typeof ch === 'undefined')
+			if (ch === '\n' || ch === undefined)
 				syntaxError('string not closed')
 
 			return stringLoop(i + 1)
 		}
 	}
 
+	/**
+	 * Adds a line comment
+	 *
+	 * @param {number} index
+	 * @param {string} type
+	 *
+	 * @return {number} - code index
+	 */
 	function addLineComment(index, type)
 	{
 		return lineCommentLoop(index + 1)
@@ -109,7 +147,7 @@ function tokenize(sourceCode)
 		{
 			const ch = sourceCode[i]
 
-			if (ch === '\n' || typeof ch === 'undefined') {
+			if (ch === '\n' || ch === undefined) {
 				addToken(type, sourceCode.slice(index + 2, i))
 				return i
 			}
@@ -118,6 +156,15 @@ function tokenize(sourceCode)
 		}
 	}
 
+	/**
+	 * Adds a punctuation or an operator
+	 *
+	 * @param {number} i
+	 * @param {string} type
+	 * @param {string[]} charList
+	 *
+	 * @return {number} - index delta
+	 */
 	function addSpecialSymbol(i, type, charList)
 	{
 		const maxLength = charList.reduce((len, symbol) => Math.max(len, symbol.length), 1)
@@ -138,16 +185,41 @@ function tokenize(sourceCode)
 		return 0
 	}
 
+	/**
+	 * Matches a single character
+	 *
+	 * @param {number} i
+	 * @param {RegExp} regex
+	 *
+	 * @return {any[]}
+	 */
 	function isChar(i, regex)
 	{
 		return sourceCode[i].match(regex)
 	}
 
+	/**
+	 * Matches two character
+	 *
+	 * @param {number} i
+	 * @param {RegExp} regex
+	 *
+	 * @return {any[]}
+	 */
 	function isCharChar(i, regex)
 	{
 		return (sourceCode[i] + sourceCode[i + 1]).match(regex)
 	}
 
+	/**
+	 * Adds a code pattern to the token list
+	 *
+	 * @param {number} i - from code index
+	 * @param {string} type
+	 * @param {RegExp} regex
+	 *
+	 * @return {number}
+	 */
 	function addPattern(i, type, regex)
 	{
 		const currLine = line
@@ -160,6 +232,14 @@ function tokenize(sourceCode)
 		return end
 	}
 
+	/**
+	 * Matches regex, sets the line and column and returns the last index
+	 *
+	 * @param {number} i
+	 * @param {RegExp} regex
+	 *
+	 * @return {number}
+	 */
 	function matchPattern(i, regex)
 	{
 		if (i >= sourceCode.length)
@@ -182,28 +262,50 @@ function tokenize(sourceCode)
 		return i
 	}
 
+	/**
+	 * Adds a token to the tokens list
+	 *
+	 * @param {string} type
+	 * @param {string} value
+	 *
+	 * @return {void}
+	 */
 	function addToken(type, value)
 	{
 		tokens.push({line, column, type, value})
 	}
 
+	/**
+	 * Throws an error
+	 *
+	 * @param {string} message
+	 *
+	 * @return {void}
+	 */
 	function syntaxError(message)
 	{
-		throw new Error('[' + (line + 1) + ', ' + (column + 1) + '] Syntax error: ' + message)
+		throw new Error(`[${line + 1}, ${column + 1}] Syntax error: ${message}`)
 	}
 }
 
 function stringify(tokens)
 {
-	return tokens
-		.map(t => {
-			switch (t.type) {
-				case 'string' : return '"'  + t.value + '"'
-				case 'comment': return '//' + t.value
-				default       : return t.value
-			}
-		})
-		.join('')
+	/**
+	 * Gets text content of a token
+	 *
+	 * @param {Token} t
+	 *
+	 * @return {string}
+	 */
+	const tokenToText = (t) => {
+		switch (t.type) {
+			case 'string' : return `"${t.value}"`
+			case 'comment': return `//${t.value}`
+			default       : return t.value
+		}
+	}
+
+	return tokens.map(tokenToText).join('')
 }
 
 function clean(tokens)

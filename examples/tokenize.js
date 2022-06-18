@@ -28,12 +28,12 @@ double AverageFromArray(const double & array[], int size)
 }
 `
 const output = tokenize(sourceCode)
-	.map( t => `[${ numPad(t.line) }, ${ numPad(t.column) }] ${t.type.padEnd(12)} => ${t.value}`)
+	.map( t => `[${ pad(t.line, 4) }, ${ pad(t.column, 4) }] ${ pad(t.type, 12) } => ${t.value}`)
 	.join('\n')
 
-console.log( output )
+console.log(output)
 
-function numPad(n)
+function pad(val, n)
 {
-	return n.toString().padStart(4)
+	return ('' + val).padStart(n)
 }

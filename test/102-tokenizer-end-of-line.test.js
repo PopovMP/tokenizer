@@ -16,24 +16,24 @@ describe('tokenizer end of line', () => {
 			strictEqual(actual.value,  '\n')
 		})
 
-		it('NLCR', () => {
-			const tokens = tokenize('\n\r')
+		it('CRNL', () => {
+			const tokens = tokenize('\r\n')
 			const actual = tokens[0]
 			strictEqual(tokens.length, 1)
 			strictEqual(actual.line,   0)
 			strictEqual(actual.column, 0)
 			strictEqual(actual.type,   'eol')
-			strictEqual(actual.value,  '\n\r')
+			strictEqual(actual.value,  '\r\n')
 		})
 
-		it('NLCR NLCR NLCR', () => {
-			const tokens = tokenize('\n\r\n\r\n\r')
+		it('CRNL CRNL CRNL', () => {
+			const tokens = tokenize('\r\n\r\n\r\n')
 			const actual = tokens[0]
 			strictEqual(tokens.length, 1)
 			strictEqual(actual.line,   0)
 			strictEqual(actual.column, 0)
 			strictEqual(actual.type,   'eol')
-			strictEqual(actual.value,  '\n\r\n\r\n\r')
+			strictEqual(actual.value,  '\r\n\r\n\r\n')
 		})
 
 		it('Nl NL a', () => {
@@ -46,4 +46,3 @@ describe('tokenizer end of line', () => {
 		})
 	})
 })
-

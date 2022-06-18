@@ -8,17 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "popovmp@rodopi"
+    "url": "git@github.com:popovmp/rodopi.git"
   },
   "keywords": [
-    "MQL",
-    "Language",
-    "Trading",
-    "Forex"
+    "tokenizer"
   ],
   "author": "Popov MP",
   "license": "MIT",
   "dependencies": {
-    "@popovmp/mocha-tiny": "^2.1.0"
+    "@popovmp/mocha-tiny": "^2.2.0"
   }
 }

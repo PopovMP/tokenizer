@@ -69,8 +69,8 @@ describe('tokenizer string', () => {
 			strictEqual(tokens[7].value, '')
 		})
 
-		it('   NLCR "aa"', () => {
-			const tokens = tokenize('   \n\r "aa"')
+		it('   CRNL "aa"', () => {
+			const tokens = tokenize('   \r\n "aa"')
 			const actual = tokens[3]
 			strictEqual(tokens.length, 4)
 			strictEqual(actual.line,   1)
