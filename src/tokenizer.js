@@ -5,9 +5,13 @@
  *
  * @property {number} line
  * @property {number} column
- * @property {string} type
+ * @property {string} type - space, eol, comment, punctuation, operator, word, number, string, character
  * @property {string} value
  */
+
+// String is enclosed in double quotes: "string"
+// Character is enclosed in single quotes: 'a', '\n', '\xhhhh', '\d'
+// Line comment is: // a line comment
 
 const operators    = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
 const punctuations = '( ) { } [ ] , ;'.split(' ')
@@ -44,6 +48,12 @@ function tokenize(sourceCode)
 		// Add a string
 		if ( isChar(i, /"/) ) {
 			mainLoop( addString(i, 'string') )
+			return
+		}
+
+		// Add a character
+		if ( isChar(i, /'/) ) {
+			mainLoop( addCharacter(i, 'character') )
 			return
 		}
 
@@ -92,6 +102,39 @@ function tokenize(sourceCode)
 		}
 
 		syntaxError('character not matched: ' + sourceCode[i])
+	}
+
+	/**
+	 * Adds a character
+	 *
+	 * @param {number} index
+	 * @param {string} type
+	 *
+	 * @return {number} - code index
+	 */
+	function addCharacter(index, type)
+	{
+		const end = characterLoop(index + 1)
+		column += end - index + 1
+
+		return end + 1
+
+		function characterLoop(i)
+		{
+			const ch = sourceCode[i]
+
+			if (ch === "'" && sourceCode[i+1] !== "'") {
+				const character = sourceCode.slice(index + 1, i)
+				addToken(type, character)
+
+				return i
+			}
+
+			if (ch === undefined)
+				syntaxError('character not closed')
+
+			return characterLoop(i + 1)
+		}
 	}
 
 	/**
@@ -249,7 +292,7 @@ function tokenize(sourceCode)
 
 		if ( ch.match(regex) ) {
 			if (ch === '\n') {
-				line += 1
+				line  += 1
 				column = 0
 			}
 			else if (ch !== '\r') {
