@@ -1,6 +1,6 @@
 'use strict'
 
-const { tokenize } = require('../src/tokenizer.js')
+const { tokenize } = require('../index.js')
 
 const sourceCode = `#include <stdio.h>
 

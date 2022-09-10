@@ -2,7 +2,7 @@
 
 const { strictEqual  } = require('assert')
 const { describe, it } = require('@popovmp/mocha-tiny')
-const { tokenize, clean, stringify } = require('../src/tokenizer.js')
+const { tokenize, clean, stringify } = require('../index.js')
 
 const sourceCode = `
 //+------------------------------------------------------------------+

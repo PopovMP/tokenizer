@@ -2,7 +2,7 @@
 
 const { strictEqual, deepStrictEqual } = require('assert')
 const { describe, it } = require('@popovmp/mocha-tiny')
-const { tokenize     } = require('../src/tokenizer.js')
+const { tokenize     } = require('../index.js')
 
 describe('tokenizer whitespace', () => {
 	describe('tokenizer.tokenize()', () => {
