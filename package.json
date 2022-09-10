@@ -1,19 +1,19 @@
 {
-  "name": "rodopi",
+  "name": "@popovmp/tokenizer",
   "version": "1.0.0",
-  "description": "MQL like programming language",
+  "description": "Tokenizer of c-like languages.",
   "main": "index.js",
   "scripts": {
     "test": "mocha-tiny"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:popovmp/rodopi.git"
+    "url": "git@github.com:PopovMP/rodopi.git"
   },
   "keywords": [
     "tokenizer"
   ],
-  "author": "Popov MP",
+  "author": "Popov",
   "license": "MIT",
   "dependencies": {
     "@popovmp/mocha-tiny": "^2.3.0"
