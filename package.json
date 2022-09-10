@@ -16,6 +16,6 @@
   "author": "Popov MP",
   "license": "MIT",
   "dependencies": {
-    "@popovmp/mocha-tiny": "^2.2.0"
+    "@popovmp/mocha-tiny": "^2.3.0"
   }
 }
