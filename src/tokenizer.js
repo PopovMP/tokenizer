@@ -342,9 +342,10 @@ function stringify(tokens)
 	 */
 	const tokenToText = (t) => {
 		switch (t.type) {
-			case 'string' : return `"${t.value}"`
-			case 'comment': return `//${t.value}`
-			default       : return t.value
+			case 'string'    : return `"${t.value}"`
+			case 'character' : return `'${t.value}'`
+			case 'comment'   : return `//${t.value}`
+			default          : return t.value
 		}
 	}
 

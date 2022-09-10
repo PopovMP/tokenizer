@@ -13,6 +13,7 @@ double AverageFromArray(const double & array[],int size)
    if(size<=0) return 0.0;
    double sum=0.0;
    double aver;
+   char ch = '\'';
 //---
    for(int i=0;i<size;i++)
      {
