@@ -5,10 +5,11 @@
  *
  * @property {number} line
  * @property {number} column
- * @property {string} type - space, eol, comment, punctuation, operator, word, number, string, character
+ * @property {string} type - space, eol, comment, pragma, punctuation, operator, word, number, string, character
  * @property {string} value
  */
 
+// Pragma starts with #: #include
 // String is enclosed in double quotes: "string"
 // Character is enclosed in single quotes: 'a', '\n', '\xhhhh', '\d'
 // Line comment is: // a line comment
@@ -54,6 +55,12 @@ function tokenize(sourceCode)
 		// Add a character
 		if ( isChar(i, /'/) ) {
 			mainLoop( addCharacter(i, 'character') )
+			return
+		}
+
+		// Add a pragma
+		if ( isChar(i, /#/) ) {
+			mainLoop( addPragma(i, 'pragma') )
 			return
 		}
 
@@ -167,10 +174,35 @@ function tokenize(sourceCode)
 				return i
 			}
 
-			if (ch === '\n' || ch === undefined)
+			if (ch === undefined)
 				syntaxError('string not closed')
 
 			return stringLoop(i + 1)
+		}
+	}
+
+	/**
+	 * Adds a pragma
+	 *
+	 * @param {number} index
+	 * @param {string} type
+	 *
+	 * @return {number} - code index
+	 */
+	function addPragma(index, type)
+	{
+		return pragmaLoop(index + 1)
+
+		function pragmaLoop(i)
+		{
+			const ch = sourceCode[i]
+
+			if (ch === ' ' || ch === undefined) {
+				addToken(type, sourceCode.slice(index + 1, i))
+				return i
+			}
+
+			return pragmaLoop(i + 1)
 		}
 	}
 
@@ -331,6 +363,13 @@ function tokenize(sourceCode)
 	}
 }
 
+/**
+ * Stringifies tokens back to a source code
+ *
+ * @param {Token[]} tokens
+ *
+ * @return {string}
+ */
 function stringify(tokens)
 {
 	/**
@@ -345,6 +384,7 @@ function stringify(tokens)
 			case 'string'    : return `"${t.value}"`
 			case 'character' : return `'${t.value}'`
 			case 'comment'   : return `//${t.value}`
+			case 'pragma'    : return `#${t.value}`
 			default          : return t.value
 		}
 	}
@@ -352,6 +392,13 @@ function stringify(tokens)
 	return tokens.map(tokenToText).join('')
 }
 
+/**
+ * Removes meaningless tokens as: space, eol, comment
+ *
+ * @param {Token[]} tokens
+ *
+ * @return {Token[]}
+ */
 function clean(tokens)
 {
 	return tokens.filter(t => !['space', 'eol', 'comment'].includes(t.type))

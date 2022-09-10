@@ -5,6 +5,8 @@ const { describe, it } = require('@popovmp/mocha-tiny')
 const { tokenize, stringify } = require('../src/tokenizer.js')
 
 const sourceCode = `
+#include <stdio.h>
+
 //+------------------------------------------------------------------+
 //| The calculation of average for an array of double type           |
 //+------------------------------------------------------------------+
