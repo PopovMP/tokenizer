@@ -1,12 +1,30 @@
 'use strict'
 
 /**
+ * TokenType
+ * @enum {string}
+ */
+const TokenType = {
+	character  : 'character',
+	comment    : 'comment',
+	eol        : 'eol',
+	number     : 'number',
+	operator   : 'operator',
+	pragma     : 'pragma',
+	punctuation: 'punctuation',
+	space      : 'space',
+	string     : 'string',
+	word       : 'word',
+	keyword    : 'keyword',
+}
+
+/**
  * @typedef {Object} Token
  *
- * @property {number} line
- * @property {number} column
- * @property {string} type - space, eol, comment, pragma, punctuation, operator, word, number, string, character
- * @property {string} value
+ * @property {number}    line
+ * @property {number}    column
+ * @property {TokenType} type
+ * @property {string}    value
  */
 
 // Pragma starts with #: #include
@@ -14,18 +32,33 @@
 // Character is enclosed in single quotes: 'a', '\n', '\xhhhh', '\d'
 // Line comment is: // a line comment
 
-const operators    = '! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
-const punctuations = '( ) { } [ ] , ;'.split(' ')
+/**
+ * @typedef {Object} TokenizerOptions
+ *
+ * @property {string[]} [keywords]
+ * @property {string[]} [operators]
+ * @property {string[]} [punctuations]
+ */
 
 /**
  * Tokenizes source code
  *
- * @param {string} sourceCode
+ * @param {string}  sourceCode
+ * @param {TokenizerOptions} options
  *
  * @return {Token[]}
  */
-function tokenize(sourceCode)
+function tokenize(sourceCode, options = {})
 {
+	const keywords = options.keywords ||
+		'int long float double void const return for while do break continue if else'.split(' ')
+
+	const operators = options.operators ||
+		'! % & * + - . / : < = > ? ++ -- == <= >= != += -= *= /= %= && ||'.split(' ')
+
+	const punctuations = options.punctuations ||
+		'( ) { } [ ] , ;'.split(' ')
+
 	/** @type {Token[]} */
 	const tokens = []
 
@@ -48,37 +81,37 @@ function tokenize(sourceCode)
 
 		// Add a string
 		if ( isChar(i, /"/) ) {
-			mainLoop( addString(i, 'string') )
+			mainLoop( addString(i, TokenType.string) )
 			return
 		}
 
 		// Add a character
 		if ( isChar(i, /'/) ) {
-			mainLoop( addCharacter(i, 'character') )
+			mainLoop( addCharacter(i, TokenType.character) )
 			return
 		}
 
 		// Add a pragma
 		if ( isChar(i, /#/) ) {
-			mainLoop( addPragma(i, 'pragma') )
+			mainLoop( addPragma(i, TokenType.pragma) )
 			return
 		}
 
 		// Add a line comment
 		if ( isCharChar(i, /\/\//) ) {
-			mainLoop( addLineComment(i, 'comment') )
+			mainLoop( addLineComment(i, TokenType.comment) )
 			return
 		}
 
 		// Add a punctuation
-		const punctuationLen = addSpecialSymbol(i, 'punctuation', punctuations)
+		const punctuationLen = addSpecialSymbol(i, TokenType.punctuation, punctuations)
 		if (punctuationLen > 0) {
 			mainLoop(i + punctuationLen)
 			return
 		}
 
 		// Add an operator
-		const operatorLen = addSpecialSymbol(i, 'operator', operators)
+		const operatorLen = addSpecialSymbol(i, TokenType.operator, operators)
 		if (operatorLen > 0) {
 			mainLoop(i + operatorLen)
 			return
@@ -86,25 +119,25 @@ function tokenize(sourceCode)
 
 		// Add a number
 		if ( isChar(i, /\d/) ) {
-			mainLoop( addPattern(i, 'number', /[.\d]/) )
+			mainLoop( addPattern(i, TokenType.number, /[.\d]/) )
 			return
 		}
 
 		// Add a word
 		if ( isChar(i, /[_a-zA-Z]/) ) {
-			mainLoop( addPattern(i, 'word', /\w/) )
+			mainLoop( addPattern(i, TokenType.word, /\w/) )
 			return
 		}
 
 		// Add whitespace
 		if ( isChar(i, /[ \t]/) ) {
-			mainLoop( addPattern(i, 'space', /[ \t]/) )
+			mainLoop( addPattern(i, TokenType.space, /[ \t]/) )
 			return
 		}
 
 		// Add a new line
 		if ( isChar(i, /[\r\n]/) ) {
-			mainLoop( addPattern(i, 'eol', /[\r\n]/) )
+			mainLoop( addPattern(i, TokenType.eol, /[\r\n]/) )
 			return
 		}
 
@@ -114,8 +147,8 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a character
 	 *
-	 * @param {number} index
-	 * @param {string} type
+	 * @param {number}    index
+	 * @param {TokenType} type
 	 *
 	 * @return {number} - code index
 	 */
@@ -147,8 +180,8 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a string
 	 *
-	 * @param {number} index
-	 * @param {string} type
+	 * @param {number}    index
+	 * @param {TokenType} type
 	 *
 	 * @return {number} - code index
 	 */
@@ -184,8 +217,8 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a pragma
 	 *
-	 * @param {number} index
-	 * @param {string} type
+	 * @param {number}    index
+	 * @param {TokenType} type
 	 *
 	 * @return {number} - code index
 	 */
@@ -209,8 +242,8 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a line comment
 	 *
-	 * @param {number} index
-	 * @param {string} type
+	 * @param {number}    index
+	 * @param {TokenType} type
 	 *
 	 * @return {number} - code index
 	 */
@@ -234,9 +267,9 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a punctuation or an operator
 	 *
-	 * @param {number} i
-	 * @param {string} type
-	 * @param {string[]} charList
+	 * @param {number}    i
+	 * @param {TokenType} type
+	 * @param {string[]}  charList
 	 *
 	 * @return {number} - index delta
 	 */
@@ -289,18 +322,22 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a code pattern to the token list
 	 *
-	 * @param {number} i - from code index
-	 * @param {string} type
-	 * @param {RegExp} regex
+	 * @param {number}    i - from code index
+	 * @param {TokenType} tokenType
+	 * @param {RegExp}    regex
 	 *
 	 * @return {number}
 	 */
-	function addPattern(i, type, regex)
+	function addPattern(i, tokenType, regex)
 	{
 		const currLine = line
 		const currCol  = column
 		const end      = matchPattern(i, regex)
 		const value    = sourceCode.slice(i, end)
+
+		const type = tokenType === TokenType.word && keywords.includes(value)
+			? TokenType.keyword
+			: tokenType
 
 		tokens.push({line: currLine, column: currCol, type, value})
 
@@ -340,8 +377,8 @@ function tokenize(sourceCode)
 	/**
 	 * Adds a token to the tokens list
 	 *
-	 * @param {string} type
-	 * @param {string} value
+	 * @param {TokenType} type
+	 * @param {string}    value
 	 *
 	 * @return {void}
 	 */

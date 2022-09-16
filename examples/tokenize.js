@@ -6,11 +6,7 @@ const sourceCode = `#include <stdio.h>
 
 int main()
 {
-    // Prints: Hello, World!
-    printf("Hello, World!\\n");
-
-    // Prints: The answer is: 42
-    printf("The answer is: %d\\n", 42);
+    printf("Hello, World!\n");
 }
 `
 const output = tokenize(sourceCode)
