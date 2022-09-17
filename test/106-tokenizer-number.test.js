@@ -26,6 +26,30 @@ describe('tokenizer number', () => {
 			strictEqual(actual.value,  '42')
 		})
 
+		it('3.14F', () => {
+			const tokens = tokenize('3.14F')
+			const actual = tokens[0]
+			strictEqual(tokens.length, 1)
+			strictEqual(actual.line,   0)
+			strictEqual(actual.column, 0)
+			strictEqual(actual.type,   'number')
+			strictEqual(actual.value,  '3.14F')
+		})
+
+		it('3.14D', () => {
+			const tokens = tokenize('3.14D')
+			const actual = tokens[0]
+			strictEqual(actual.type,   'number')
+			strictEqual(actual.value,  '3.14D')
+		})
+
+		it('42L', () => {
+			const tokens = tokenize('42L')
+			const actual = tokens[0]
+			strictEqual(actual.type,   'number')
+			strictEqual(actual.value,  '42L')
+		})
+
 		it(' 3  3.14  NL9.98//xx', () => {
 			const tokens = tokenize(' 3  3.14  \n9.98//xx')
 			strictEqual(tokens.length, 8)

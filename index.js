@@ -35,6 +35,7 @@ const TokenType = {
 /**
  * @typedef {Object} TokenizerOptions
  *
+ * @property {string[]} [numberSuffix]
  * @property {string[]} [keywords]
  * @property {string[]} [operators]
  * @property {string[]} [punctuations]
@@ -50,6 +51,9 @@ const TokenType = {
  */
 function tokenize(sourceCode, options = {})
 {
+	const numberSuffix = options.numberSuffix ||
+		'L D F'.split(' ')
+
 	const keywords = options.keywords ||
 		'int long float double void const return for while do break continue if else'.split(' ')
 
@@ -119,7 +123,8 @@ function tokenize(sourceCode, options = {})
 
 		// Add a number
 		if ( isChar(i, /\d/) ) {
-			mainLoop( addPattern(i, TokenType.number, /[.\d]/) )
+			const numRegEx = new RegExp(`[.\\d${numberSuffix.join('')}]`)
+			mainLoop( addPattern(i, TokenType.number, numRegEx) )
 			return
 		}
 
